@@ -81,20 +81,19 @@ public class Grader {
 
     public Map<String, Student> findTopperPerUniversity(List<Student> gradedStudents) {
         // TODO: add your implementation here
-
         //Compare by getUniversity name and then finalScore
-        Comparator<Student> compareBy = Comparator
-                .comparing(Student::getUniversity)
-                .thenComparing(Student::getFinalScore);
+        if(!gradedStudents.isEmpty()){
+            Comparator<Student> compareBy = Comparator
+                    .comparing(Student::getUniversity)
+                    .thenComparing(Student::getFinalScore);
 
-        Collections.sort(gradedStudents, compareBy);
+            Collections.sort(gradedStudents, compareBy);
 
-        HashMap<String,Student> map = new HashMap<>();
-        for (Student s : gradedStudents) {
-            map.put(s.getUniversity(),s);
-        }
-
-        if(!map.isEmpty()){
+            HashMap<String,Student> map = new HashMap<>();
+            
+            for (Student s : gradedStudents) {
+                map.put(s.getUniversity(),s);
+            }
             return map;
         }
         return new HashMap<>();
