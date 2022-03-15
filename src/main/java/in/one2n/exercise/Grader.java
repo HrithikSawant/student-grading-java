@@ -1,41 +1,47 @@
 package in.one2n.exercise;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Grader {
+    private static final String SEPARATOR = ",";
 
     public List<Student> parseCSV(String filepath) {
         // TODO: add your implementation here
 
-        List<Student> students = new ArrayList<>();
+        Path path = Paths.get(filepath);
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filepath));
-            //to skip header
-            br.readLine();
-            String currentLine =  br.readLine();
-            while (currentLine != null){
-                String [] data = currentLine.split(",");
-                Student student = createStudent(data);
-                students.add(student);
-                currentLine =  br.readLine();
+            if (!Files.exists(path)) {
+                throw new FileNotFoundException();
+            } else {
+                List<Student> students;
+                try (Stream<String> stream = Files.lines(path)) {
+                    students = stream.skip(1)
+                            .map(s -> s.split(SEPARATOR))
+                            .map(this::createStudent)
+                            .collect(Collectors.toList());
+                    return students;
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            return students;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
-
         return Collections.emptyList();
     }
 
     private Student createStudent(String[] data) {
         //                students.add(new Student(data[0],data[1],data[2],Double.parseDouble(data[3]),
-//                        Double.parseDouble(data[4]),Double.parseDouble(data[5]),Double.parseDouble(data[6])));
+        //                        Double.parseDouble(data[4]),Double.parseDouble(data[5]),Double.parseDouble(data[6])));
         return new Student(data[0], data[1], data[2],Double.valueOf(data[3]),
                 Double.valueOf(data[4]),Double.valueOf(data[5]),Double.valueOf(data[6]));
     }
@@ -69,7 +75,7 @@ public class Grader {
     public Student findOverallTopper(List<Student> gradedStudents) {
         // TODO: add your implementation here
 
-        gradedStudents.sort((s1, s2) -> (int) (s2.getFinalScore() - s1.getFinalScore()));
+        gradedStudents.sort(Comparator.comparing(Student::getFinalScore));
         return gradedStudents.get(0);
     }
 
