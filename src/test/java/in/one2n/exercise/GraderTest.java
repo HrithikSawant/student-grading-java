@@ -61,7 +61,6 @@ public class GraderTest {
         Student topper = grader.findOverallTopper(gradedStudents);
 
         assertThat(topper, is(new Student("Bernard", "Wilson", "Boston University")));
-
     }
 
     @Test

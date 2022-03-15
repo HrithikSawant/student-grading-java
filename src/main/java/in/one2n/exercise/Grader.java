@@ -12,17 +12,16 @@ public class Grader {
         // TODO: add your implementation here
 
         List<Student> students = new ArrayList<>();
-        String currentLine;
         try {
             BufferedReader br = new BufferedReader(new FileReader(filepath));
             //to skip header
             br.readLine();
-            while ((currentLine = br.readLine()) != null){
+            String currentLine =  br.readLine();
+            while (currentLine != null){
                 String [] data = currentLine.split(",");
-//                students.add(new Student(data[0],data[1],data[2],Double.parseDouble(data[3]),
-//                        Double.parseDouble(data[4]),Double.parseDouble(data[5]),Double.parseDouble(data[6])));
-                students.add(new Student(data[0],data[1],data[2],Double.valueOf(data[3]),
-                        Double.valueOf(data[4]),Double.valueOf(data[5]),Double.valueOf(data[6])));
+                Student student = createStudent(data);
+                students.add(student);
+                currentLine =  br.readLine();
             }
             return students;
         } catch (FileNotFoundException e) {
@@ -34,6 +33,13 @@ public class Grader {
         return Collections.emptyList();
     }
 
+    private Student createStudent(String[] data) {
+        //                students.add(new Student(data[0],data[1],data[2],Double.parseDouble(data[3]),
+//                        Double.parseDouble(data[4]),Double.parseDouble(data[5]),Double.parseDouble(data[6])));
+        return new Student(data[0], data[1], data[2],Double.valueOf(data[3]),
+                Double.valueOf(data[4]),Double.valueOf(data[5]),Double.valueOf(data[6]));
+    }
+
     public List<Student> calculateGrade(List<Student> students) {
         // TODO: add your implementation here
 
@@ -42,16 +48,17 @@ public class Grader {
                 Double score = student.getFinalScore();
                 if (score >= 70) {
                     student.setGrade(Grade.A);
+                    continue;
                 }
-                if (score >= 50 && score < 70) {
+                if (score >= 50) {
                     student.setGrade(Grade.B);
+                    continue;
                 }
-                if (score >= 35 && score < 50) {
+                if (score >= 35) {
                     student.setGrade(Grade.C);
+                    continue;
                 }
-                if (score < 35) {
-                    student.setGrade(Grade.F);
-                }
+                student.setGrade(Grade.F);
             }
             return students;
         }
@@ -63,24 +70,18 @@ public class Grader {
         // TODO: add your implementation here
 
         gradedStudents.sort((s1, s2) -> (int) (s2.getFinalScore() - s1.getFinalScore()));
-
-//        gradedStudents.sort((s1, s2) -> (int) (s2.getFinalScore() - s1.getFinalScore()));
-
         return gradedStudents.get(0);
     }
 
     public Map<String, Student> findTopperPerUniversity(List<Student> gradedStudents) {
         // TODO: add your implementation here
 
-
-        //Compare by getUniversity name and then final Score name
+        //Compare by getUniversity name and then finalScore
         Comparator<Student> compareBy = Comparator
                 .comparing(Student::getUniversity)
                 .thenComparing(Student::getFinalScore);
 
         Collections.sort(gradedStudents, compareBy);
-
-
 
         HashMap<String,Student> map = new HashMap<>();
         for (Student s : gradedStudents) {

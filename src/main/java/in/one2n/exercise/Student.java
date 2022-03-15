@@ -17,12 +17,9 @@ public class Student  {
     private Grade grade;
 
 
-
-
     public String getUniversity() {
         return university;
     }
-
 
 
     public void setGrade(Grade grade) {
@@ -80,19 +77,20 @@ public class Student  {
     @Override
     public boolean equals(Object obj) {
 
-
-        if(this == obj) {
-            return true;
-        }
-        if(obj == null || obj.getClass()!= this.getClass()) {
+        if(obj == null){
             return false;
         }
 
+        if(obj.getClass() != this.getClass()){
+            return false;
+        }
 
         // type casting of the argument.
         Student student = (Student) obj;
 
-        return (student.firstname.equals(this.firstname) && student.lastname.equals(this.lastname) && student.university.equals(this.university));
+        return this.university!=null ? student.university != null : this.university.equals(student.university)
+                && this.lastname != null ? student.lastname != null : this.lastname.equals(student.lastname)
+                && this.firstname != null ? student.firstname != null : this.firstname.equals(student.firstname);
     }
 
 }
